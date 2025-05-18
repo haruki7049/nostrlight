@@ -58,19 +58,42 @@
           LD_LIBRARY_PATH = lib.makeLibraryPath buildInputs;
 
           cargoArtifacts = craneLib.buildDepsOnly {
-            inherit src nativeBuildInputs buildInputs LD_LIBRARY_PATH;
+            inherit
+              src
+              nativeBuildInputs
+              buildInputs
+              LD_LIBRARY_PATH
+              ;
           };
           nostrlight = craneLib.buildPackage {
-            inherit src cargoArtifacts nativeBuildInputs buildInputs LD_LIBRARY_PATH;
+            inherit
+              src
+              cargoArtifacts
+              nativeBuildInputs
+              buildInputs
+              LD_LIBRARY_PATH
+              ;
             strictDeps = true;
             doCheck = true;
           };
           cargo-clippy = craneLib.cargoClippy {
-            inherit src cargoArtifacts nativeBuildInputs buildInputs LD_LIBRARY_PATH;
+            inherit
+              src
+              cargoArtifacts
+              nativeBuildInputs
+              buildInputs
+              LD_LIBRARY_PATH
+              ;
             cargoClippyExtraArgs = "--verbose -- --deny warning";
           };
           cargo-doc = craneLib.cargoDoc {
-            inherit src cargoArtifacts nativeBuildInputs buildInputs LD_LIBRARY_PATH;
+            inherit
+              src
+              cargoArtifacts
+              nativeBuildInputs
+              buildInputs
+              LD_LIBRARY_PATH
+              ;
           };
         in
         {

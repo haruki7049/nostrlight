@@ -1,12 +1,11 @@
 use gtk4::prelude::*;
-use serde::{Deserialize, Serialize};
 use nostr::key::public_key::PublicKey;
+use serde::{Deserialize, Serialize};
 
 fn main() -> anyhow::Result<()> {
     let mut config: Config = confy::load::<Config>("Nostrlight", "config")?;
 
-    let application =
-        gtk4::Application::new(Some("dev.haruki7049.nostrlight"), Default::default());
+    let application = gtk4::Application::new(Some("dev.haruki7049.nostrlight"), Default::default());
 
     application.connect_activate(build_ui);
 
@@ -15,7 +14,8 @@ fn main() -> anyhow::Result<()> {
     Ok(())
 }
 
-fn build_ui(application: &gtk4::Application) { let window = gtk4::ApplicationWindow::new(application);
+fn build_ui(application: &gtk4::Application) {
+    let window = gtk4::ApplicationWindow::new(application);
 
     window.set_title(Some("Nostrlight"));
     window.set_default_size(350, 70);
@@ -61,7 +61,10 @@ struct Config {
 impl std::default::Default for Config {
     fn default() -> Self {
         Self {
-            pubkey: PublicKey::from_byte_array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]),
+            pubkey: PublicKey::from_byte_array([
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0,
+            ]),
         }
     }
 }
