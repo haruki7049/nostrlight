@@ -40,30 +40,37 @@
           rust = pkgs.rust-bin.fromRustupToolchainFile ./rust-toolchain.toml;
           craneLib = (inputs.crane.mkLib pkgs).overrideToolchain rust;
           overlays = [ inputs.rust-overlay.overlays.default ];
+
           src = lib.cleanSource ./.;
+          nativeBuildInputs = [
+            # Build tools
+            rust
+            pkgs.pkg-config
+
+            # Language servers
+            pkgs.nil
+          ];
+          buildInputs = [
+            pkgs.gtk4
+            pkgs.cairo
+            pkgs.pango
+          ];
+          LD_LIBRARY_PATH = lib.makeLibraryPath buildInputs;
+
           cargoArtifacts = craneLib.buildDepsOnly {
-            inherit src;
-          };
-          cargo-build-targets = {
-            x86_64-linux.CARGO_BUILD_TARGET = "x86_64-unknown-linux-musl";
-            aarch64-linux.CARGO_BUILD_TARGET = "aarch64-unknown-linux-musl";
-            x86_64-darwin.CARGO_BUILD_TARGET = "x86_64-apple-darwin";
-            aarch64-darwin.CARGO_BUILD_TARGET = "aarch64-apple-darwin";
+            inherit src nativeBuildInputs buildInputs LD_LIBRARY_PATH;
           };
           nostrlight = craneLib.buildPackage {
-            inherit src cargoArtifacts;
+            inherit src cargoArtifacts nativeBuildInputs buildInputs LD_LIBRARY_PATH;
             strictDeps = true;
             doCheck = true;
-
-            inherit (cargo-build-targets."${system}") CARGO_BUILD_TARGET;
-            CARGO_BUILD_RUSTFLAGS = "-C target-feature=+crt-static";
           };
           cargo-clippy = craneLib.cargoClippy {
-            inherit src cargoArtifacts;
+            inherit src cargoArtifacts nativeBuildInputs buildInputs LD_LIBRARY_PATH;
             cargoClippyExtraArgs = "--verbose -- --deny warning";
           };
           cargo-doc = craneLib.cargoDoc {
-            inherit src cargoArtifacts;
+            inherit src cargoArtifacts nativeBuildInputs buildInputs LD_LIBRARY_PATH;
           };
         in
         {
@@ -115,13 +122,7 @@
           };
 
           devShells.default = pkgs.mkShell {
-            packages = [
-              # Rust
-              rust
-
-              # Nix
-              pkgs.nil
-            ];
+            inherit nativeBuildInputs buildInputs LD_LIBRARY_PATH;
 
             shellHook = ''
               export PS1="\n[nix-shell:\w]$ "
