@@ -1,14 +1,5 @@
 {
-  description = "A hrtor's flake";
-
-  nixConfig = {
-    extra-substituters = [
-      "https://hrtor.cachix.org"
-    ];
-    extra-trusted-public-keys = [
-      "hrtor.cachix.org-1:fXGmUinLwE/TpyGhEyTGYEzk6L5cyJ0soYB385+k9lg="
-    ];
-  };
+  description = "A nostrlight's flake";
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
@@ -59,7 +50,7 @@
             x86_64-darwin.CARGO_BUILD_TARGET = "x86_64-apple-darwin";
             aarch64-darwin.CARGO_BUILD_TARGET = "aarch64-apple-darwin";
           };
-          hrtor = craneLib.buildPackage {
+          nostrlight = craneLib.buildPackage {
             inherit src cargoArtifacts;
             strictDeps = true;
             doCheck = true;
@@ -110,14 +101,14 @@
           };
 
           packages = {
-            inherit hrtor;
-            default = hrtor;
+            inherit nostrlight;
+            default = nostrlight;
             doc = cargo-doc;
           };
 
           checks = {
             inherit
-              hrtor
+              nostrlight
               cargo-clippy
               cargo-doc
               ;
